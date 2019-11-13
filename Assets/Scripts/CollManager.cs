@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum Agent
 {
-    heroshipSphere
+    heroshipFocus,
 }
 
 public class CollManager : MonoBehaviour
@@ -24,8 +24,16 @@ public class CollManager : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("kokokriko");
-        Destroy(other);
+        switch (agent)
+        {
+            case Agent.heroshipFocus:
+                Destroy(other.gameObject);
+                break;
+            default:
+                break;
+        }
     }
+
+    
     
 }

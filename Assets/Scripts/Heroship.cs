@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Heroship : MonoBehaviour
 {
-    public GameObject cam, camOrigin, limits, cannon, bullet, sphere;
+    public GameObject cam, camOrigin, limits, cannon, bullet, focus, target;
     public float speed, sensibility;
 
-    public float mousex, mousey;
+    float mousex, mousey;
     int timerA;
     Vector3 targetpos;
     
@@ -17,15 +17,13 @@ public class Heroship : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        sphere.AddComponent<CollManager>();
+        focus.AddComponent<CollManager>().agent = Agent.heroshipFocus;
     }
 
-    // Update is called once per frame
     void Update()
     {
         Control();
-        Shot();
-
+        FocusControl();
     }
 
     void Control()
@@ -36,13 +34,14 @@ public class Heroship : MonoBehaviour
         limits.transform.position=new Vector3(transform.position.x/5,0,transform.position.z);
         cam.transform.position=new Vector3(cam.transform.position.x,cam.transform.position.y,camOrigin.transform.position.z);
         cam.transform.LookAt(transform.position);
+        cannon.transform.eulerAngles = new Vector3(cam.transform.eulerAngles.x, cam.transform.eulerAngles.y, 0);
         timerA++;
         if (timerA==5)
         {
             targetpos=transform.position;
             timerA=0;
         }
-        cam.transform.position=Vector3.Lerp(cam.transform.position, targetpos+new Vector3(0,0.1f,0), speed/70);
+        cam.transform.position=Vector3.Lerp(cam.transform.position, targetpos+new Vector3(0,0.1f,0), speed/200);
         if (Input.GetMouseButton(0))
         {
             GetComponent<Rigidbody>().velocity=transform.forward*speed;
@@ -53,12 +52,18 @@ public class Heroship : MonoBehaviour
         }
     }
 
-    void Shot()
+    void FocusControl()
     {
         if (Input.GetKey(KeyCode.W))
         {
-            sphere.transform.position+=sphere.transform.forward*sensibility/20;
+            transform.GetChild(2).transform.position+=transform.forward*sensibility/20;
         }
+        if (Input.GetKey(KeyCode.S))
+        {
+            transform.GetChild(2).transform.position-=transform.forward*sensibility/20;
+        }
+        focus.transform.position = transform.GetChild(2).transform.position;
+        focus.SetActive(Input.GetKey(KeyCode.Space));
     }
 }
 
