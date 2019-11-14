@@ -52,7 +52,7 @@ public class CollManager : MonoBehaviour
         timer++;
         if (timer>5)
         {
-            if (timer>70)
+            if (timer>200)
             {
                 Destroy(gameObject);
             }
