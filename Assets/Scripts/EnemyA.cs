@@ -38,7 +38,8 @@ public class EnemyA : Enemy
         //    timerALimit=Random.Range(10, 50);
         //}
 
-        transform.position = Vector3.Lerp(transform.position, new Vector3(randomFollow.x, randomFollow.y, transform.position.z), 0.1f);
-        GetComponent<Rigidbody>().velocity = transform.forward * velocity;
+        //transform.position = Vector3.Lerp(transform.position, new Vector3(randomFollow.x, randomFollow.y, transform.position.z), 0.1f);
+        GetComponent<Rigidbody>().velocity = transform.up;// * velocity;
+        
     }
 }
