@@ -11,6 +11,7 @@ public enum Agent
 public class CollManager : MonoBehaviour
 {
     public Agent agent;
+    public GameObject gameObjectA;
 
     void Start()
     {
@@ -33,10 +34,18 @@ public class CollManager : MonoBehaviour
         switch (agent)
         {
             case Agent.heroshipFocus:
-                if (other.GetComponent<Heroship>()==false)
+                if (Input.GetMouseButton(1))
                 {
-                    Destroy(other.gameObject);
+                    if (other.GetComponent<Heroship>()==false)
+                    {
+                        Destroy(other.gameObject);
+                    }
                 }
+                if (Input.GetKey(KeyCode.Space))
+                {
+                    gameObjectA.GetComponent<Heroship>().caught=other.gameObject;
+                }
+                
                 break;
             case Agent.EnemyA_Bullet:
                 Destroy(gameObject);
@@ -52,16 +61,18 @@ public class CollManager : MonoBehaviour
         timer++;
         if (timer>5)
         {
-            if (timer>200)
+            if (timer>300)
             {
                 Destroy(gameObject);
             }
             else
             {
-                transform.localScale+=new Vector3(1,1,1)*0.005f;
+                transform.localScale+=new Vector3(1,1,1)*0.002f;
             }
         }
     }
     
+
+
     
 }

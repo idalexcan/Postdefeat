@@ -5,12 +5,14 @@ using UnityEngine;
 public class EnemyA : Enemy
 {
     public GameObject bulletPos, bullet;
+    public int[] movingLapses, shotLapses;
     Vector2 randomFollow;
 
-    int timerA, timerB, timerALimit = 15, timerBLimit = 100;
+    int timerA, timerB, timerALimit = 15, timerBLimit = 1;
+    float herospeed;
     void Awake()
     {
-        
+        herospeed=heroship.GetComponent<Heroship>().speed;
     }
 
     void Update()
@@ -19,27 +21,26 @@ public class EnemyA : Enemy
         if (timerB==timerBLimit)
         {
             randomFollow=new Vector2(Random.Range(-1f,1f), Random.Range(-1f,1f));
-            //transform.position=new Vector3(randomFollow.x, randomFollow.y, transform.position.z);
+            velocity = Random.Range(herospeed*0.2f, herospeed * 1.8f);
             timerB = 0;
-            timerBLimit = Random.Range(20, 250);
-            float heroVelocity= heroship.GetComponent<Rigidbody>().velocity.z;
-            velocity = Random.Range(heroVelocity, heroVelocity * 1.8f);
+            timerBLimit = Random.Range(movingLapses[0], movingLapses[1]);
             
         }
 
-        //timerA++;
-        //if (timerA==timerALimit)
-        //{
-        //    GameObject droped=Instantiate(bullet);
-        //    droped.transform.position=bulletPos.transform.position;
-        //    droped.GetComponent<Rigidbody>().AddForce(transform.up*(-100));
-        //    droped.AddComponent<CollManager>().agent=Agent.EnemyA_Bullet;
-        //    timerA=0;
-        //    timerALimit=Random.Range(10, 50);
-        //}
+        timerA++;
+        if (timerA==timerALimit)
+        {
+           GameObject droped=Instantiate(bullet);
+           droped.transform.position=bulletPos.transform.position;
+           droped.GetComponent<Rigidbody>().AddForce(transform.up*(-100));
+           droped.AddComponent<CollManager>().agent=Agent.EnemyA_Bullet;
+           timerA=0;
+           timerALimit=Random.Range(shotLapses[0], shotLapses[1]);
+        }
 
-        //transform.position = Vector3.Lerp(transform.position, new Vector3(randomFollow.x, randomFollow.y, transform.position.z), 0.1f);
-        GetComponent<Rigidbody>().velocity = transform.up;// * velocity;
+        transform.position = Vector3.Lerp(transform.position, new Vector3(randomFollow.x, randomFollow.y, transform.position.z), 0.1f);
+        GetComponent<Rigidbody>().velocity = transform.up * velocity;
+        
         
     }
 }
