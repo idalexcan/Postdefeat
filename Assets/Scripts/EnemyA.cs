@@ -33,7 +33,7 @@ public class EnemyA : Enemy
            GameObject droped=Instantiate(bullet);
            droped.transform.position=bulletPos.transform.position;
            droped.GetComponent<Rigidbody>().AddForce(transform.up*(-100));
-           droped.AddComponent<CollManager>().agent=Agent.EnemyA_Bullet;
+           droped.AddComponent<CollManager>().agent=Agent.Bullet;
            timerA=0;
            timerALimit=Random.Range(shotLapses[0], shotLapses[1]);
         }

@@ -1,15 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+public enum ShipType
+{
+    capsuler, spheric
+}
 public class Heroship : MonoBehaviour
 {
-    public GameObject cam, camOrigin, limits, focus;
+    public ShipType ship;
+    public GameObject cam, camOrigin, limits, focus, cannon, bullet;
     public float speed, sensibility, aceleration, focusDistance;
 
     float mousex, mousey;
-    int timerA;
-    Vector3 targetpos;
+
     
     // Start is called before the first frame update
     void Awake()
@@ -17,48 +20,53 @@ public class Heroship : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        focus.AddComponent<CollManager>().agent = Agent.heroshipFocus;
-        focus.GetComponent<CollManager>().gameObjectA=gameObject;
+        if (ship==ShipType.capsuler)
+        {
+            focus.AddComponent<CollManager>().agent = Agent.heroshipFocus;
+            focus.GetComponent<CollManager>().gameObjectA=gameObject;
+        }
+        else if (ship==ShipType.spheric)
+        {
+            
+        }
+
+        aceleration=speed;
     }
 
     void Update()
     {
-        Control();
-        FocusControl();
+        if (ship==ShipType.capsuler)
+        {
+            ControlCapsuler();
+            FocusControl();
+        }
+        else if (ship==ShipType.spheric)
+        {
+            ControlSpheric();
+            Shot();
+        }
+        
     }
 
-    void Control()
+    void ControlCapsuler()
     {
         mousey=Input.GetAxis("Mouse X");
         mousex=Input.GetAxis("Mouse Y");
-        transform.Rotate(new Vector3(mousex,mousey*-1,0)*sensibility);
+        transform.Rotate(new Vector3(mousex,mousey,0)*sensibility);
         limits.transform.position=new Vector3(transform.position.x/5,0,transform.position.z);
-        //cam.transform.position=new Vector3(cam.transform.position.x,cam.transform.position.y,camOrigin.transform.position.z);
-        cam.transform.position=new Vector3(transform.position.x,transform.position.y+0.09f,camOrigin.transform.position.z);
+        cam.transform.position=new Vector3(transform.position.x,transform.position.y+0.1f,camOrigin.transform.position.z);
         cam.transform.LookAt(transform.position);
-        timerA++;
-        if (timerA==5)
+        
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-            //targetpos=transform.position;
-            timerA=0;
+            aceleration+=1f;
         }
-        //cam.transform.position=new Vector3(cam.transform.position.x,cam.transform.position.y,camOrigin.transform.position.z);
-        //cam.transform.position=Vector3.Lerp(cam.transform.position, targetpos+new Vector3(0,0.1f,0), aceleration/200);
-
-        if(Input.GetKey(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            aceleration=speed*1.8f;
+            aceleration-=1;
         }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            aceleration=speed*0.3f;
-        }
-        else
-        {
-            aceleration=speed;
-        }
-
-        if (Input.GetMouseButton(0))
+        
+        if (Input.GetKey(KeyCode.W))
         {
             GetComponent<Rigidbody>().velocity=transform.forward*aceleration;
         }
@@ -66,30 +74,62 @@ public class Heroship : MonoBehaviour
         {
             GetComponent<Rigidbody>().velocity=Vector3.zero;
         }
+        
     }
-
 
     public GameObject caught;
     void FocusControl()
     {
         focusDistance=(focus.transform.position-transform.position).magnitude;
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.D))
         {
             transform.GetChild(2).transform.position+=transform.forward*sensibility/20;
         }
-        if (Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.A))
         {
             transform.GetChild(2).transform.position-=transform.forward*sensibility/20;
         }
         focus.transform.position = transform.GetChild(2).transform.position;
-        //focus.SetActive(Input.GetKey(KeyCode.Space));
 
-        if (Input.GetKey(KeyCode.Space) && caught!=null && caught!=focus.gameObject)
+        if (Input.GetMouseButton(0) && caught!=null && caught!=focus.gameObject && caught.isStatic==false)
         {
             caught.transform.position=focus.transform.position;
 
         }
     }
+
+    void ControlSpheric()
+    {
+        mousey=Input.GetAxis("Mouse X");
+        mousex=Input.GetAxis("Mouse Y");
+        transform.Rotate(new Vector3(mousex,mousey*-1,0)*sensibility);
+        if (Input.GetKey(KeyCode.W))
+        {
+            GetComponent<Rigidbody>().velocity=transform.forward*aceleration;
+        }
+        else if (Input.GetKey(KeyCode.S))
+        {
+            GetComponent<Rigidbody>().velocity=transform.forward*aceleration*-1;
+        }
+        else
+        {
+            GetComponent<Rigidbody>().velocity=Vector3.zero;
+        }
+    }
+
+    void Shot()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            GameObject bt=Instantiate(bullet);
+            bt.transform.position=cannon.transform.position+(transform.forward*0.05f);
+            bt.transform.eulerAngles=cannon.transform.eulerAngles;
+            bt.GetComponent<Rigidbody>().AddForce(bt.transform.up*300);
+            bt.AddComponent<CollManager>().agent=Agent.Bullet;
+            bt.GetComponent<CollManager>().idBullet=2;
+        }
+    } 
+
 }
 
 

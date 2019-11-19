@@ -5,13 +5,15 @@ using UnityEngine;
 public enum Agent
 {
     heroshipFocus,
-    EnemyA_Bullet
+    Bullet
 }
 
 public class CollManager : MonoBehaviour
 {
     public Agent agent;
     public GameObject gameObjectA;
+    public int idBullet, timer=0;
+
 
     void Start()
     {
@@ -23,8 +25,16 @@ public class CollManager : MonoBehaviour
     {
         switch (agent)
         {
-            case Agent.EnemyA_Bullet:
-                BulletEnemA();
+            case Agent.Bullet:
+                switch (idBullet)
+                {
+                    case 1:
+                        BulletEA();
+                        break;
+                    case 2:
+                        BulletHSB();
+                        break;
+                }
                 break;
         }
     }
@@ -41,22 +51,20 @@ public class CollManager : MonoBehaviour
                         Destroy(other.gameObject);
                     }
                 }
-                if (Input.GetKey(KeyCode.Space))
+                if (Input.GetMouseButton(0))
                 {
                     gameObjectA.GetComponent<Heroship>().caught=other.gameObject;
                 }
-                
                 break;
-            case Agent.EnemyA_Bullet:
+
+            case Agent.Bullet:
                 Destroy(gameObject);
                 break;
-            default:
-                break;
+
         }
     }
 
-    int timer=0;
-    void BulletEnemA()
+    void BulletEA()
     {
         timer++;
         if (timer>5)
@@ -72,7 +80,14 @@ public class CollManager : MonoBehaviour
         }
     }
     
-
+    void BulletHSB()
+    {
+        timer++;
+        if (timer>170)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     
 }
