@@ -52,7 +52,7 @@ public class Heroship : MonoBehaviour
     {
         mousey=Input.GetAxis("Mouse X");
         mousex=Input.GetAxis("Mouse Y");
-        transform.Rotate(new Vector3(mousex,mousey,0)*sensibility);
+        transform.Rotate(new Vector3(mousex,mousey*-1,0)*sensibility);
         limits.transform.position=new Vector3(transform.position.x/5,0,transform.position.z);
         cam.transform.position=new Vector3(transform.position.x,transform.position.y+0.1f,camOrigin.transform.position.z);
         cam.transform.LookAt(transform.position);
