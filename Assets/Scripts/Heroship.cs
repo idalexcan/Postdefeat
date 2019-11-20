@@ -9,7 +9,7 @@ public class Heroship : MonoBehaviour
 {
     public ShipType ship;
     public GameObject cam, camOrigin, limits, focus, cannon, bullet;
-    public float speed, sensibility, aceleration, focusDistance;
+    public float speed, sensibility, aceleration;
 
     float mousex, mousey;
 
@@ -18,27 +18,23 @@ public class Heroship : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        if (ship==ShipType.capsuler)
-        {
-            focus.AddComponent<CollManager>().agent = Agent.heroshipFocus;
-            focus.GetComponent<CollManager>().gameObjectA=gameObject;
-        }
         aceleration=speed;
     }
 
     void Update()
     {
-        if (ship==ShipType.capsuler)
+        transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, 0);
+        switch (ship)
         {
-            ControlCapsuler();
-            FocusControl();
+            case ShipType.capsuler:
+                ControlCapsuler();
+                Shot();
+                break;
+            case ShipType.spheric:
+                ControlSpheric();
+                Shot();
+                break;
         }
-        else if (ship==ShipType.spheric)
-        {
-            ControlSpheric();
-            Shot();
-        }
-        
     }
 
     // FUNCIONES PARA NAVE CAPSULAR _______________________________________________________________________________________________________
@@ -69,27 +65,7 @@ public class Heroship : MonoBehaviour
             GetComponent<Rigidbody>().velocity=Vector3.zero;
         }
         
-    }
-    public GameObject caught;
-    void FocusControl()
-    {
-        focusDistance=(focus.transform.position-transform.position).magnitude;
-        if (Input.GetKey(KeyCode.D))
-        {
-            transform.GetChild(2).transform.position+=transform.forward*sensibility/20;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.GetChild(2).transform.position-=transform.forward*sensibility/20;
-        }
-        focus.transform.position = transform.GetChild(2).transform.position;
-
-        if (Input.GetMouseButton(0) && caught!=null && caught!=focus.gameObject && caught.isStatic==false && caught.GetComponent<Heroship>()==false)
-        {
-            caught.transform.position=focus.transform.position;
-
-        }
-    }
+    }    
 
     // FUNCIONES PARA NAVE ESFÉRICA _______________________________________________________________________________________________________
     void ControlSpheric()
@@ -133,17 +109,18 @@ public class Heroship : MonoBehaviour
 
         
     }
+
+
     void Shot()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            GameObject bt=Instantiate(bullet);
-            GameObject cannonC=cannon.transform.GetChild(0).gameObject;
-            bt.transform.eulerAngles=cannonC.transform.eulerAngles;
-            bt.transform.position=cannon.transform.position;//+(bt.transform.forward*0.05f);
-            bt.GetComponent<Rigidbody>().AddForce(bt.transform.up*500);
-            bt.AddComponent<CollManager>().agent=Agent.Bullet;
-            bt.GetComponent<CollManager>().idBullet=2;
+            GameObject bt = Instantiate(bullet);
+            GameObject cannonC = cannon.transform.GetChild(0).gameObject;
+            bt.transform.eulerAngles = cannonC.transform.eulerAngles;
+            bt.transform.position = cannon.transform.position;//+(bt.transform.forward*0.05f);
+            bt.GetComponent<Rigidbody>().AddForce(bt.transform.up * 700);
+            bt.AddComponent<BulletManager>().type = BulletType.HeroshipA;
         }
     } 
 

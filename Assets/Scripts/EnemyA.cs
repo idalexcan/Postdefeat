@@ -17,15 +17,14 @@ public class EnemyA : Enemy
 
     void Update()
     {
-        timerB++;
-        if (timerB==timerBLimit)
-        {
-            randomFollow=new Vector2(Random.Range(-1f,1f), Random.Range(-1f,1f));
-            velocity = Random.Range(herospeed*0.2f, herospeed * 1.8f);
-            timerB = 0;
-            timerBLimit = Random.Range(movingLapses[0], movingLapses[1]);
-            
-        }
+        //timerB++;
+        //if (timerB==timerBLimit)
+        //{
+        //    randomFollow=new Vector2(Random.Range(-1f,1f), Random.Range(-1f,1f));
+        //    velocity = Random.Range(herospeed*0.2f, herospeed * 1.8f);
+        //    timerB = 0;
+        //    timerBLimit = Random.Range(movingLapses[0], movingLapses[1]);   
+        //}
 
         timerA++;
         if (timerA==timerALimit)
@@ -33,7 +32,7 @@ public class EnemyA : Enemy
            GameObject droped=Instantiate(bullet);
            droped.transform.position=bulletPos.transform.position;
            droped.GetComponent<Rigidbody>().AddForce(transform.up*(-100));
-           droped.AddComponent<CollManager>().agent=Agent.Bullet;
+           //droped.AddComponent<BulletManager>().agent=Agent.Bullet;
            timerA=0;
            timerALimit=Random.Range(shotLapses[0], shotLapses[1]);
         }
