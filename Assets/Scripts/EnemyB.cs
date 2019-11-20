@@ -21,11 +21,9 @@ public class EnemyB : Enemy
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         target=obstacles[obstaclesCount].transform.GetChild(0).transform.position;
-        //transform.position=Vector3.Lerp(transform.position, target, 0.08f);
         transform.position-=(transform.position-target).normalized*0.2f;
         bool aux=(transform.position-target).magnitude<1f;
         if (aux && obstaclesCount<obstacles.Length-1)

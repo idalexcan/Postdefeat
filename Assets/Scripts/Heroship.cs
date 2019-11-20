@@ -13,8 +13,6 @@ public class Heroship : MonoBehaviour
 
     float mousex, mousey;
 
-    
-    // Start is called before the first frame update
     void Awake()
     {
         Cursor.visible = false;
@@ -25,11 +23,6 @@ public class Heroship : MonoBehaviour
             focus.AddComponent<CollManager>().agent = Agent.heroshipFocus;
             focus.GetComponent<CollManager>().gameObjectA=gameObject;
         }
-        else if (ship==ShipType.spheric)
-        {
-            
-        }
-
         aceleration=speed;
     }
 
@@ -48,6 +41,7 @@ public class Heroship : MonoBehaviour
         
     }
 
+    // FUNCIONES PARA NAVE CAPSULAR _______________________________________________________________________________________________________
     void ControlCapsuler()
     {
         mousey=Input.GetAxis("Mouse X");
@@ -76,7 +70,6 @@ public class Heroship : MonoBehaviour
         }
         
     }
-
     public GameObject caught;
     void FocusControl()
     {
@@ -91,40 +84,64 @@ public class Heroship : MonoBehaviour
         }
         focus.transform.position = transform.GetChild(2).transform.position;
 
-        if (Input.GetMouseButton(0) && caught!=null && caught!=focus.gameObject && caught.isStatic==false)
+        if (Input.GetMouseButton(0) && caught!=null && caught!=focus.gameObject && caught.isStatic==false && caught.GetComponent<Heroship>()==false)
         {
             caught.transform.position=focus.transform.position;
 
         }
     }
 
+    // FUNCIONES PARA NAVE ESFÉRICA _______________________________________________________________________________________________________
     void ControlSpheric()
     {
         mousey=Input.GetAxis("Mouse X");
         mousex=Input.GetAxis("Mouse Y");
-        transform.Rotate(new Vector3(mousex,mousey*-1,0)*sensibility);
+        cannon.transform.Rotate(new Vector3(mousex,mousey*-1,0)*sensibility);
+        Vector3 toLook=cannon.transform.GetChild(1).transform.position;
+        cam.transform.LookAt(toLook);
+        cam.transform.position=Vector3.Lerp(cam.transform.position, camOrigin.transform.position, 0.1f);
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            aceleration+=1f;
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            aceleration-=1;
+        }
+
         if (Input.GetKey(KeyCode.W))
         {
-            GetComponent<Rigidbody>().velocity=transform.forward*aceleration;
+            GetComponent<Rigidbody>().velocity=cannon.transform.forward*aceleration;
         }
         else if (Input.GetKey(KeyCode.S))
         {
-            GetComponent<Rigidbody>().velocity=transform.forward*aceleration*-1;
+            GetComponent<Rigidbody>().velocity=cannon.transform.forward*aceleration*-1;
         }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            GetComponent<Rigidbody>().velocity=cannon.transform.right*aceleration*0.5f;
+        }  
+        else if (Input.GetKey(KeyCode.A))
+        {
+            GetComponent<Rigidbody>().velocity=cannon.transform.right*aceleration*-0.5f;
+        }   
         else
         {
             GetComponent<Rigidbody>().velocity=Vector3.zero;
         }
-    }
 
+        
+    }
     void Shot()
     {
         if (Input.GetMouseButtonDown(0))
         {
             GameObject bt=Instantiate(bullet);
-            bt.transform.position=cannon.transform.position+(transform.forward*0.05f);
-            bt.transform.eulerAngles=cannon.transform.eulerAngles;
-            bt.GetComponent<Rigidbody>().AddForce(bt.transform.up*300);
+            GameObject cannonC=cannon.transform.GetChild(0).gameObject;
+            bt.transform.eulerAngles=cannonC.transform.eulerAngles;
+            bt.transform.position=cannon.transform.position;//+(bt.transform.forward*0.05f);
+            bt.GetComponent<Rigidbody>().AddForce(bt.transform.up*500);
             bt.AddComponent<CollManager>().agent=Agent.Bullet;
             bt.GetComponent<CollManager>().idBullet=2;
         }

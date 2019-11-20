@@ -58,7 +58,12 @@ public class CollManager : MonoBehaviour
                 break;
 
             case Agent.Bullet:
-                Destroy(gameObject);
+                if (other.tag=="CanDamage")
+                {
+                    Destroy(gameObject);
+                    Destroy(other.gameObject);
+                }
+                
                 break;
 
         }

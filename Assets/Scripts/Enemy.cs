@@ -13,7 +13,6 @@ public class Enemy : MonoBehaviour
             Random.Range(xa,xb),
             Random.Range(ya,yb),
             Random.Range(za,zb));
-
     }
 }
 
