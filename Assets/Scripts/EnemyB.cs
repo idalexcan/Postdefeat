@@ -6,12 +6,12 @@ public class EnemyB : Enemy
 {
     float keeping=0.5f, impulse=100;
     public GameObject[] obstacles;
-    public GameObject obstaclesP;
+    public GameObject obstaclesP, taker;
     int obstaclesCount=0;
     Vector3 target;
     void Awake()
     {
-        
+        taker=GameObject.Find("Taker");
         obstacles=new GameObject[obstaclesP.transform.childCount];
         for (int i = 0, j=5; i < obstacles.Length; i++, j+=5)
         {
@@ -23,14 +23,21 @@ public class EnemyB : Enemy
 
     void Update()
     {
-        target=obstacles[obstaclesCount].transform.GetChild(0).transform.position;
-        transform.position-=(transform.position-target).normalized*0.2f;
-        bool aux=(transform.position-target).magnitude<1f;
-        if (aux && obstaclesCount<obstacles.Length-1)
+        if ((taker.transform.position-transform.position).magnitude<0.5f)
         {
-            obstaclesCount++;
-            obstacles[obstaclesCount].GetComponent<MeshRenderer>().enabled=true;
+            transform.position=taker.transform.position;
+            GetComponent<SphereCollider>().enabled=false;
         }
-        
+        else
+        {
+            target=obstacles[obstaclesCount].transform.GetChild(0).transform.position;
+            transform.position-=(transform.position-target).normalized*0.2f;
+            bool aux=(transform.position-target).magnitude<1f;
+            if (aux && obstaclesCount<obstacles.Length-1)
+            {
+                obstaclesCount++;
+                obstacles[obstaclesCount].GetComponent<MeshRenderer>().enabled=true;
+            }
+        }
     }
 }

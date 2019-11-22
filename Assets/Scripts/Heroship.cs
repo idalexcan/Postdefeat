@@ -10,6 +10,8 @@ public class Heroship : MonoBehaviour
     public ShipType ship;
     public GameObject cam, camOrigin, limits, focus, cannon, bullet;
     public float speed, sensibility, aceleration;
+    public bool withCannon;
+    Vector3 lastpos, lastrot;
 
     float mousex, mousey;
 
@@ -28,13 +30,30 @@ public class Heroship : MonoBehaviour
         {
             case ShipType.capsuler:
                 ControlCapsuler();
-                Shot();
+                if (withCannon)
+                {
+                    Shot();
+                }
                 break;
             case ShipType.spheric:
                 ControlSpheric();
                 Shot();
                 break;
         }
+        lastpos=transform.position;
+        lastrot=transform.eulerAngles;
+    }
+
+    void OnCollisionEnter(Collision other)
+    {
+        // GetComponent<Rigidbody>().velocity=Vector3.zero;
+        // GetComponent<Rigidbody>().freezeRotation=true;
+        //GetComponent<Rigidbody>().freezeRotation=false;
+    }
+
+    void Reactive()
+    {
+        GetComponent<Rigidbody>().freezeRotation=false;
     }
 
     // FUNCIONES PARA NAVE CAPSULAR _______________________________________________________________________________________________________
