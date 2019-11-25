@@ -115,11 +115,11 @@ public class Heroship : MonoBehaviour
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            GetComponent<Rigidbody>().velocity=cannon.transform.right*aceleration*0.5f;
+            GetComponent<Rigidbody>().velocity=cannon.transform.right*aceleration;
         }  
         else if (Input.GetKey(KeyCode.A))
         {
-            GetComponent<Rigidbody>().velocity=cannon.transform.right*aceleration*-0.5f;
+            GetComponent<Rigidbody>().velocity=cannon.transform.right*aceleration*-1;
         }   
         else
         {
