@@ -4,9 +4,9 @@ using UnityEngine;
 
 public enum BulletType
 {
-    HeroshipA,
-    HerochipB,
-    EnemyA
+    Heroship,
+    EnemyA,
+    EnemyB
 }
 public class BulletManager : MonoBehaviour
 {
@@ -21,14 +21,14 @@ public class BulletManager : MonoBehaviour
     {
         switch (type)
         {
-            case BulletType.HeroshipA:
-                HeroshipA();
-                break;
-            case BulletType.HerochipB:
-
+            case BulletType.Heroship:
+                Heroship();
                 break;
             case BulletType.EnemyA:
 
+                break;
+            case BulletType.EnemyB:
+                EnemyB();
                 break;
         }
     }
@@ -37,25 +37,51 @@ public class BulletManager : MonoBehaviour
     {
         switch (type)
         {
-            case BulletType.HeroshipA:
+            case BulletType.Heroship:
                 if (other.tag=="CanDamage")
                 {
                     Destroy(other.gameObject);
                 }
                 break;
-            case BulletType.HerochipB:
-
-                break;
             case BulletType.EnemyA:
 
+                break;
+            case BulletType.EnemyB:
+                if (other.gameObject.GetComponent<Heroship>())
+                {
+                    Vector3 tempVel=GetComponent<Rigidbody>().velocity;
+                    other.gameObject.GetComponent<Rigidbody>().AddForce(tempVel*500);
+                    other.gameObject.GetComponent<Heroship>().stroke=true;
+                    Destroy(gameObject);
+                }
                 break;
         }
     }
 
-    void HeroshipA()
+    void OnCollisionEnter(Collision other)
+    {
+        if (type==BulletType.EnemyB && other.gameObject.GetComponent<Heroship>())
+        {
+            Vector3 tempVel=GetComponent<Rigidbody>().velocity;
+            other.gameObject.GetComponent<Rigidbody>().AddForce(tempVel*500);
+            other.gameObject.GetComponent<Heroship>().stroke=true;
+            Destroy(gameObject);
+        }
+    }
+
+    void Heroship()
     {
         timer++;
-        if (timer==100)
+        if (timer==70)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    void EnemyB()
+    {
+        timer++;
+        if (timer==60)
         {
             Destroy(gameObject);
         }

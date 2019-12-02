@@ -10,8 +10,7 @@ public class Heroship : MonoBehaviour
     public ShipType ship;
     public GameObject cam, camOrigin, limits, focus, cannon, bullet;
     public float speed, sensibility, aceleration;
-    public bool withCannon;
-    Vector3 lastpos, lastrot;
+    public bool withCannon, stroke;
 
     float mousex, mousey;
 
@@ -40,21 +39,10 @@ public class Heroship : MonoBehaviour
                 Shot();
                 break;
         }
-        lastpos=transform.position;
-        lastrot=transform.eulerAngles;
     }
 
-    void OnCollisionEnter(Collision other)
-    {
-        // GetComponent<Rigidbody>().velocity=Vector3.zero;
-        // GetComponent<Rigidbody>().freezeRotation=true;
-        //GetComponent<Rigidbody>().freezeRotation=false;
-    }
+    
 
-    void Reactive()
-    {
-        GetComponent<Rigidbody>().freezeRotation=false;
-    }
 
     // FUNCIONES PARA NAVE CAPSULAR _______________________________________________________________________________________________________
     void ControlCapsuler()
@@ -96,13 +84,13 @@ public class Heroship : MonoBehaviour
         cam.transform.LookAt(toLook);
         cam.transform.position=Vector3.Lerp(cam.transform.position, camOrigin.transform.position, 0.1f);
 
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKey(KeyCode.LeftShift))
         {
-            aceleration+=1f;
+            aceleration=speed*3;
         }
-        if (Input.GetKeyDown(KeyCode.E))
+        else
         {
-            aceleration-=1;
+            aceleration=speed;
         }
 
         if (Input.GetKey(KeyCode.W))
@@ -120,12 +108,23 @@ public class Heroship : MonoBehaviour
         else if (Input.GetKey(KeyCode.A))
         {
             GetComponent<Rigidbody>().velocity=cannon.transform.right*aceleration*-1;
-        }   
+        }
+        else if (Input.GetKey(KeyCode.Space))
+        {
+            GetComponent<Rigidbody>().velocity=transform.up*aceleration*3;
+        }
+        else if (Input.GetKey(KeyCode.C))
+        {
+            GetComponent<Rigidbody>().velocity=transform.up*aceleration*-3;
+        }
         else
         {
-            GetComponent<Rigidbody>().velocity=Vector3.zero;
-        }
-
+            if (stroke==false)
+            {
+                GetComponent<Rigidbody>().velocity=Vector3.zero;
+            }
+            
+        }  
         
     }
 
@@ -139,7 +138,7 @@ public class Heroship : MonoBehaviour
             bt.transform.eulerAngles = cannonC.transform.eulerAngles;
             bt.transform.position = cannon.transform.position;//+(bt.transform.forward*0.05f);
             bt.GetComponent<Rigidbody>().AddForce(bt.transform.up * 700);
-            bt.AddComponent<BulletManager>().type = BulletType.HeroshipA;
+            bt.AddComponent<BulletManager>().type = BulletType.Heroship;
         }
     } 
 
