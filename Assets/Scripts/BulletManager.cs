@@ -24,9 +24,11 @@ public class BulletManager : MonoBehaviour
             case BulletType.Heroship:
                 Heroship();
                 break;
-            case BulletType.EnemyA:
 
+            case BulletType.EnemyA:
+                EnemyA();
                 break;
+
             case BulletType.EnemyB:
                 EnemyB();
                 break;
@@ -43,9 +45,11 @@ public class BulletManager : MonoBehaviour
                     Destroy(other.gameObject);
                 }
                 break;
-            case BulletType.EnemyA:
 
+            case BulletType.EnemyA:
+                
                 break;
+
             case BulletType.EnemyB:
                 if (other.gameObject.GetComponent<Heroship>())
                 {
@@ -75,6 +79,22 @@ public class BulletManager : MonoBehaviour
         if (timer==70)
         {
             Destroy(gameObject);
+        }
+    }
+
+    void EnemyA()
+    {
+        timer++;
+        if (timer>=5)
+        {
+            if (timer<30)
+            {
+                transform.localScale+=new Vector3(1,1,1)*0.04f;
+            }
+            if (timer>=120)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 
