@@ -17,6 +17,8 @@ public class Heroship : MonoBehaviour
 
         aceleration=speed;
         cannonpos=transform.GetChild(0).transform.GetChild(3).gameObject;
+
+        // de 0 a 12
     }
 
     void Update()
